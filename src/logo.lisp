@@ -1,6 +1,4 @@
-;;;; logo.lisp
-
-(in-package #:cl-logo)
+(in-package :cl-logo)
 
 (defparameter turtle-pane nil)
 (defparameter turtle-x 320)
@@ -17,31 +15,34 @@
   (setf turtle-theta 0)
   (setf turtle-draw t))
 
+(defun radians (angle)
+  (* (float pi 1f0) (/ angle 180)))
+
 (defun forward (length)
-  (let ((new-x (+ turtle-x (* length (cos turtle-theta))))
-        (new-y (- turtle-y (* length (sin turtle-theta)))))
+  (let ((new-x (+ turtle-x (* length (cos (radians turtle-theta)))))
+        (new-y (- turtle-y (* length (sin (radians turtle-theta))))))
     (if turtle-draw
         (draw-line turtle-pane turtle-x turtle-y new-x new-y))
     (setf turtle-x new-x)
     (setf turtle-y new-y)))
 
-(defun radians (angle)
-  (* pi (/ angle 180)))
-
-(defun right (angle)
-  (setf turtle-theta (- turtle-theta (radians angle))))
-
-(defun back (length)
-  (forward (- length)))
-
-(defun left (angle)
-  (right (- angle)))
+(defun rotate (angle)
+  (setf turtle-theta (+ turtle-theta angle)))
 
 (defun penup ()
   (setf turtle-draw nil))
 
 (defun pendown ()
   (setf turtle-draw t))
+
+(defun backward (length)
+  (forward (- length)))
+
+(defun right (angle)
+  (rotate (- angle)))
+
+(defun left (angle)
+  (rotate angle))
 
 #|
 (defun plot ()

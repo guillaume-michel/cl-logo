@@ -1,5 +1,3 @@
-;;;; (asdf:operate 'asdf:test-op :cl-logo)
-
 (in-package :cl-logo-tests)
 
 (fiveam:def-suite cl-logo-test-suite

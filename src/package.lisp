@@ -1,14 +1,13 @@
-;;;; package.lisp
-
-(defpackage #:cl-logo
-  (:use #:cl)
+(defpackage :cl-logo
+  (:nicknames :logo)
+  (:use :cl)
   (:export
    #:get-state
    #:reset
    #:forward
    #:radians
    #:right
-   #:back
+   #:backward
    #:left
    #:penup
    #:pendown

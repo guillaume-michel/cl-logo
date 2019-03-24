@@ -1,14 +1,18 @@
-;;;; main.lisp
-
-(in-package #:cl-logo)
+(in-package :cl-logo)
 
 (defparameter *screen-width* 320)
 (defparameter *screen-height* 240)
 
 (defmacro with-window-surface ((window surface) &body body)
   `(sdl2:with-init (:video)
+     (format t "Using SDL Library Version: ~D.~D.~D~%"
+             sdl2-ffi:+sdl-major-version+
+             sdl2-ffi:+sdl-minor-version+
+             sdl2-ffi:+sdl-patchlevel+)
+     (finish-output)
+
      (sdl2:with-window (,window
-                        :title "SDL2 Tutorial"
+                        :title "Logo"
                         :w *screen-width*
                         :h *screen-height*
                         :flags '(:shown))
@@ -21,8 +25,9 @@
     (sdl2:with-event-loop (:method :poll)
       (:quit () t)
       (:keyup (:keysym keysym)
-             (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-escape)
-               (sdl2:push-event :quit)))
+              (when (sdl2:scancode= (sdl2:scancode-value keysym)
+                                    :scancode-escape)
+                (sdl2:push-event :quit)))
       (:idle ()
              (sdl2:fill-rect screen-surface
                              nil
