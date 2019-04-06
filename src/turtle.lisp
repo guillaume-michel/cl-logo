@@ -108,3 +108,6 @@
 
 (defun current-pos ()
   (cons (x *turtle*) (y *turtle*)))
+
+(eval-when (::load-toplevel)
+  (reset))
