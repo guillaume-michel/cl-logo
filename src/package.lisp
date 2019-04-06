@@ -4,6 +4,8 @@
   (:export
    #:*turtle*
    #:get-state
+   #:show-program
+   #:undo
    #:reset
    #:defcmd
    #:forward

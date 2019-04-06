@@ -32,6 +32,17 @@
 
 (defparameter *turtle* nil)
 
+(defun reset-turtle ()
+  (setf *turtle* (make-instance 'turtle-state)))
+
+(defparameter *history* nil)
+
+(defun reset-history ()
+  (setf *history* '()))
+
+(defun show-program ()
+  (mapcar #'cadr (reverse *history*)))
+
 (defun get-state()
   (list (x *turtle*)
         (y *turtle*)
@@ -39,7 +50,18 @@
         (pen *turtle*)))
 
 (defun reset ()
-  (setf *turtle* (make-instance 'turtle-state)))
+  (reset-history)
+  (reset-turtle)
+  *turtle*)
+
+(defun undo ()
+  (cond ((null *history*) t)
+        ((= (length *history*) 1) (reset))
+        (t (progn
+             (setf *history* (cdr *history*))
+             (setf *turtle* (caar *history*)))))
+  *turtle*)
+
 
 (defconstant +degrees-to-radians+ (/ (float pi 1f0) 180))
 (defconstant +radians-to-degrees+ (/ 180 (float pi 1f0)))
@@ -49,8 +71,13 @@
 
 (defmacro defcmd (name lambda-list &body body)
   `(defun ,name (,@lambda-list)
-     ,@body
-     *turtle*))
+     (progn
+       (let ((history *history*))
+         ,@body
+         (setf *history* (cons (list (copy-object *turtle*)
+                                     (list (quote ,name) ,@lambda-list))
+                               history))
+         *turtle*))))
 
 (defun precise-cos (angle)
   "precise cosine with arguments in degrees"
