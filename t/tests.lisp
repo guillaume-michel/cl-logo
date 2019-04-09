@@ -9,7 +9,7 @@
   (fiveam:is (equal (progn (reset)
                            (forward 10)
                            (get-state))
-                    (list 330.0 240.0 0 t))))
+                    (list 10 0 0 :down))))
 
 (defun run-tests ()
   (princ "Running all cl-logo unit tests")
