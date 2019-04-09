@@ -101,7 +101,7 @@
   (let* ((new-x (+ (x *turtle*) (* length (precise-cos (theta *turtle*)))))
          (new-y (+ (y *turtle*) (* length (precise-sin (theta *turtle*))))))
     (if (eq (pen *turtle*) :down)
-        (draw-line (x *turtle*) (y *turtle*) new-x new-y))
+        (draw-line *backend* (x *turtle*) (y *turtle*) new-x new-y))
     (setf (x *turtle*) new-x)
     (setf (y *turtle*) new-y)))
 
