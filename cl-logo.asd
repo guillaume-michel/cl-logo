@@ -7,7 +7,8 @@
   :license "MIT License (see COPYING)"
   :depends-on ("uiop"
                "cl-logo/core"
-               "cl-logo/backend/text")
+               "cl-logo/backend/text"
+               "cl-logo/backend/sdl2")
   :components ((:static-file "COPYING")
                (:static-file "README.org"))
   :in-order-to ((test-op (test-op "cl-logo-tests"))))
@@ -37,5 +38,18 @@
   :depends-on ("uiop"
                "cl-logo/core")
   :components ((:module "src/backend/text"
+                        :serial t
+                        :components ((:file "primitives")))))
+
+(defsystem "cl-logo/backend/sdl2"
+  :description "Logo implemented in Common LISP - SDL2 + Cairo2 backend"
+  :version "0.0.1"
+  :author "Guillaume MICHEL"
+  :mailto "contact@orilla.fr"
+  :homepage "http://www.orilla.fr"
+  :license "MIT License (see COPYING)"
+  :depends-on ("uiop"
+               "cl-logo/core")
+  :components ((:module "src/backend/sdl2"
                         :serial t
                         :components ((:file "primitives")))))

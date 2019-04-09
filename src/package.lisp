@@ -32,6 +32,12 @@
   (:export #:draw-line
            #:set-text-backend-as-default))
 
+(uiop:define-package :cl-logo-backend-sdl2
+    (:use :cl
+          :cl-logo-core)
+  (:export #:draw-line
+           #:set-sdl2-backend-as-default))
+
 (uiop:define-package :cl-logo
   (:nicknames :logo)
   (:use :cl
