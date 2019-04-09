@@ -1,4 +1,4 @@
-(in-package :cl-logo)
+(in-package :cl-logo-core)
 
 (defclass turtle-state ()
   ((x :initarg :x

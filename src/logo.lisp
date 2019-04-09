@@ -1,4 +1,4 @@
-(in-package :cl-logo)
+(in-package :cl-logo-core)
 
 (defcmd up (length)
   (face-up)
