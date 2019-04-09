@@ -1,6 +1,6 @@
 (defsystem "cl-logo"
   :description "Logo implemented in Common LISP"
-  :version "0.0.1"
+  :version (:read-file-form "version.lisp" :at (1 2))
   :author "Guillaume MICHEL"
   :mailto "contact@orilla.fr"
   :homepage "http://www.orilla.fr"
@@ -11,12 +11,13 @@
   :serial t
   :components ((:static-file "COPYING")
                (:static-file "README.org")
-               (:file "package"))
+               (:file "package")
+               (:file "version"))
   :in-order-to ((test-op (test-op "cl-logo-tests"))))
 
 (defsystem "cl-logo/core"
   :description "Logo implemented in Common LISP - Core functionalities"
-  :version "0.0.1"
+  :version (:read-file-form "version.lisp" :at (1 2))
   :author "Guillaume MICHEL"
   :mailto "contact@orilla.fr"
   :homepage "http://www.orilla.fr"
@@ -31,7 +32,7 @@
 
 (defsystem "cl-logo/backend"
   :description "Logo implemented in Common LISP - backend API"
-  :version "0.0.1"
+  :version (:read-file-form "version.lisp" :at (1 2))
   :author "Guillaume MICHEL"
   :mailto "contact@orilla.fr"
   :homepage "http://www.orilla.fr"
@@ -44,7 +45,7 @@
 
 (defsystem "cl-logo/backend/null"
   :description "Logo implemented in Common LISP - null backend"
-  :version "0.0.1"
+  :version (:read-file-form "version.lisp" :at (1 2))
   :author "Guillaume MICHEL"
   :mailto "contact@orilla.fr"
   :homepage "http://www.orilla.fr"
@@ -58,7 +59,7 @@
 
 (defsystem "cl-logo/backend/text"
   :description "Logo implemented in Common LISP - text console backend"
-  :version "0.0.1"
+  :version (:read-file-form "version.lisp" :at (1 2))
   :author "Guillaume MICHEL"
   :mailto "contact@orilla.fr"
   :homepage "http://www.orilla.fr"
@@ -72,7 +73,7 @@
 
 (defsystem "cl-logo/backend/sdl2"
   :description "Logo implemented in Common LISP - SDL2 + Cairo2 backend"
-  :version "0.0.1"
+  :version (:read-file-form "version.lisp" :at (1 2))
   :author "Guillaume MICHEL"
   :mailto "contact@orilla.fr"
   :homepage "http://www.orilla.fr"
@@ -86,7 +87,7 @@
 
 (defsystem "cl-logo/app"
   :description "Logo implemented in Common LISP - Application"
-  :version "0.0.1"
+  :version (:read-file-form "version.lisp" :at (1 2))
   :author "Guillaume MICHEL"
   :mailto "contact@orilla.fr"
   :homepage "http://www.orilla.fr"

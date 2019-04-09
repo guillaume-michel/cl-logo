@@ -5,4 +5,6 @@
         :cl-logo.backend)
   (:reexport
    :cl-logo.core
-   :cl-logo.backend))
+   :cl-logo.backend)
+  (:export
+   #:*version*))
