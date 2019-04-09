@@ -1,4 +1,4 @@
-(in-package :cl-logo-backend-text)
+(in-package :cl-logo.backend.text)
 
 (defclass text-backend ()
   ())

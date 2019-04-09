@@ -5,8 +5,9 @@
   :homepage "http://www.orilla.fr"
   :license "MIT License (see COPYING)"
   :depends-on ("cl-logo"
+               "cl-logo/backend/null"
                "fiveam")
-  :perform (test-op (o s) (symbol-call :cl-logo-tests '#:run-tests))
+  :perform (test-op (o s) (symbol-call :cl-logo.tests '#:run-tests))
   :components ((:module "t"
                 :serial t
                 :components ((:file "package")

@@ -1,4 +1,4 @@
-(in-package :cl-logo-backend-sdl2)
+(in-package :cl-logo.backend.sdl2)
 
 (defclass sdl2-backend ()
   ())

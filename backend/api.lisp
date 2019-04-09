@@ -1,4 +1,4 @@
-(in-package :cl-logo-core)
+(in-package :cl-logo.backend)
 
 (defparameter *backend* nil)
 

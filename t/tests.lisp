@@ -1,4 +1,4 @@
-(in-package :cl-logo-tests)
+(in-package :cl-logo.tests)
 
 (fiveam:def-suite cl-logo-test-suite
     :description "cl-logo test suite.")

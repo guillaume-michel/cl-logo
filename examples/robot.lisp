@@ -1,4 +1,4 @@
-(in-package :cl-logo-examples)
+(in-package :cl-logo.examples)
 
 (defcmd robot (w h)
   "Draw a simplistic robot face based on rectangles"
