@@ -2,5 +2,7 @@
 (uiop:define-package :cl-logo.backend.sdl2
     (:use :cl
           :cl-logo.backend)
-  (:export #:draw-line
+  (:export #:init
+           #:shutdown
+           #:draw-line
            #:set-sdl2-backend-as-default))

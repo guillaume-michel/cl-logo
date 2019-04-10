@@ -3,6 +3,10 @@
 (defclass null-backend ()
   ())
 
+(defmethod init ((backend null-backend)))
+
+(defmethod shutdown ((backend null-backend)))
+
 (defmethod draw-line ((backend null-backend) x1 y1 x2 y2)
   (declare (ignore backend x1 y1 x2 y2)))
 

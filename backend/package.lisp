@@ -3,5 +3,7 @@
     (:use :cl)
   (:export
    #:*backend*
+   #:init
+   #:shutdown
    #:draw-line
    ))

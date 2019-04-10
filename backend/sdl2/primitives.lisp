@@ -3,6 +3,10 @@
 (defclass sdl2-backend ()
   ())
 
+(defmethod init ((backend sdl2-backend)))
+
+(defmethod shutdown ((backend sdl2-backend)))
+
 (defmethod draw-line ((backend sdl2-backend) x1 y1 x2 y2)
   (declare (ignore backend))
   (format t "SDL2: draw line from (~D, ~D) to (~D, ~D)~%" x1 y1 x2 y2))
