@@ -5,5 +5,6 @@
    #:*backend*
    #:init
    #:shutdown
+   #:update
    #:draw-line
    ))

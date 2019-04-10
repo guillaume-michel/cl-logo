@@ -4,5 +4,6 @@
           :cl-logo.backend)
   (:export #:init
            #:shutdown
+           #:update
            #:draw-line
            #:set-sdl2-backend-as-default))

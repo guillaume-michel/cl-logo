@@ -79,7 +79,12 @@
   :homepage "http://www.orilla.fr"
   :license "MIT License (see COPYING)"
   :depends-on ("uiop"
-               "cl-logo/backend")
+               "cl-logo/backend"
+               "sdl2"
+               "cl-opengl"
+               "cl-cairo2"
+               "bordeaux-threads"
+               "cl-autowrap")
   :components ((:module "backend/sdl2"
                         :serial t
                         :components ((:file "package")
