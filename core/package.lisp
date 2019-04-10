@@ -1,6 +1,5 @@
-(defpackage :cl-logo
-  (:nicknames :logo)
-  (:use :cl)
+(uiop:define-package :cl-logo.core
+    (:use :cl)
   (:export
    #:*turtle*
    #:get-state
@@ -23,5 +22,4 @@
    #:down
    #:left
    #:right
-))
-
+   ))

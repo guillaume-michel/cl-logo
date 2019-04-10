@@ -1,4 +1,4 @@
-(in-package :cl-logo)
+(in-package :cl-logo.core)
 
 (defclass turtle-state ()
   ((x :initarg :x
@@ -101,7 +101,11 @@
   (let* ((new-x (+ (x *turtle*) (* length (precise-cos (theta *turtle*)))))
          (new-y (+ (y *turtle*) (* length (precise-sin (theta *turtle*))))))
     (if (eq (pen *turtle*) :down)
-        (draw-line (x *turtle*) (y *turtle*) new-x new-y))
+        (cl-logo.backend:draw-line cl-logo.backend:*backend*
+                                   (x *turtle*)
+                                   (y *turtle*)
+                                   new-x
+                                   new-y))
     (setf (x *turtle*) new-x)
     (setf (y *turtle*) new-y)))
 

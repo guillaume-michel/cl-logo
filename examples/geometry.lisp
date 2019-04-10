@@ -1,4 +1,4 @@
-(in-package :cl-logo-examples)
+(in-package :cl-logo.examples)
 
 (defcmd rectangle (w h)
   (up h)
