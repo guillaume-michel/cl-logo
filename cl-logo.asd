@@ -41,6 +41,7 @@
   :components ((:module "backend"
                         :serial t
                         :components ((:file "package")
+                                     (:file "transaction")
                                      (:file "api")))))
 
 (defsystem "cl-logo/backend/null"

@@ -3,6 +3,12 @@
     (:use :cl)
   (:export
    #:*backend*
+   #:transaction
+   #:transaction-commands
+   #:transaction-count
+   #:start-transaction
+   #:end-transaction
+   #:with-transaction
    #:init
    #:shutdown
    #:update

@@ -62,7 +62,6 @@
              (setf *turtle* (caar *history*)))))
   *turtle*)
 
-
 (defconstant +degrees-to-radians+ (/ (float pi 1f0) 180))
 (defconstant +radians-to-degrees+ (/ 180 (float pi 1f0)))
 
@@ -72,12 +71,13 @@
 (defmacro defcmd (name lambda-list &body body)
   `(defun ,name (,@lambda-list)
      (progn
-       (let ((history *history*))
-         ,@body
+       (with-transaction (*backend*)
+         ,@body)
+       (when (= (transaction-count *backend*) 0)
          (setf *history* (cons (list (copy-object *turtle*)
                                      (list (quote ,name) ,@lambda-list))
-                               history))
-         *turtle*))))
+                               *history*)))
+       *turtle*)))
 
 (defun precise-cos (angle)
   "precise cosine with arguments in degrees"

@@ -1,6 +1,6 @@
 (in-package :cl-logo.backend.text)
 
-(defclass text-backend ()
+(defclass text-backend (transaction)
   ())
 
 (defmethod init ((backend text-backend)))

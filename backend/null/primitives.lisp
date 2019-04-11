@@ -1,6 +1,6 @@
 (in-package :cl-logo.backend.null)
 
-(defclass null-backend ()
+(defclass null-backend (transaction)
   ())
 
 (defmethod init ((backend null-backend)))
