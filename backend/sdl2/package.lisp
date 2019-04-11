@@ -5,5 +5,6 @@
   (:export #:init
            #:shutdown
            #:update
+           #:reset-backend
            #:draw-line
            #:set-sdl2-backend-as-default))

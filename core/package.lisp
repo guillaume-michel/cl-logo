@@ -4,6 +4,8 @@
                 #:*backend*
                 #:with-transaction
                 #:transaction-count
+                #:reset-transaction
+                #:reset-backend
                 )
   (:export
    #:*turtle*

@@ -6,4 +6,5 @@
   (:export
    #:rectangle
    #:square
+   #:robot
    ))

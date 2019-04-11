@@ -52,6 +52,9 @@
 (defun reset ()
   (reset-history)
   (reset-turtle)
+  (unless (null *backend*)
+    (reset-transaction *backend*)
+    (reset-backend *backend*))
   *turtle*)
 
 (defun undo ()

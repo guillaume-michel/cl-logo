@@ -28,3 +28,7 @@ ref counting is done to detect end of transaction."))
      (start-transaction ,backend)
      (unwind-protect (progn ,@body)
        (end-transaction ,backend))))
+
+(defun reset-transaction (transaction)
+  (setf (transaction-commands transaction) nil)
+  (setf (transaction-count transaction) 0))

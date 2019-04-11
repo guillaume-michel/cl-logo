@@ -1,5 +1,7 @@
 (in-package :cl-logo.backend.sdl2)
 
+(defparameter *draw-commands* nil)
+
 (defclass sdl2-backend (transaction)
   ((width :initarg :width
           :accessor width)
@@ -24,14 +26,53 @@
   (values))
 
 (defmethod update ((backend sdl2-backend))
-  (sdl2:push-event :userevent))
+  (when sdl2::*event-loop*
+    (sdl2:push-event :userevent)))
 
 (defmethod draw-line ((backend sdl2-backend) x1 y1 x2 y2)
-  (declare (ignore backend))
+  (unless (/= (transaction-count backend) 0)
+    (error "draw-line should be called in a transaction"))
+
+  (setf (transaction-commands backend)
+        (cons (lambda ()
+                (cairo:move-to x1 y1)
+                (cairo:line-to x2 y2))
+              (transaction-commands backend)))
+
   (format t "SDL2: draw line from (~D, ~D) to (~D, ~D)~%" x1 y1 x2 y2))
+
+(defmethod reset-backend ((backend sdl2-backend))
+  (setf *draw-commands* nil)
+  (update backend))
 
 (defun set-sdl2-backend-as-default (&key width height)
   (setf *backend* (make-instance 'sdl2-backend :width width :height height)))
+
+(defmethod start-transaction ((backend sdl2-backend))
+  (call-next-method)
+  (format t "start-transaction SDL2 ~A~%" (transaction-count backend)))
+
+(defmethod end-transaction ((backend sdl2-backend))
+  (format t "end-transaction SDL2 ~A~%" (transaction-count backend))
+
+  (when (= (transaction-count backend) 1)
+    (setf *draw-commands*
+          (cons (reverse (transaction-commands backend))
+                *draw-commands*))
+    (setf (transaction-commands backend) nil))
+
+  (call-next-method)
+
+  (update backend))
+
+(defun run-commands (cmds)
+  (cond ((null cmds) nil)
+        ((functionp cmds) (funcall cmds))
+        ((consp cmds)
+         (run-commands (car cmds))
+         (run-commands (cdr cmds)))
+        (t (error "cl-logo.backend.sdl2:run-commands expects FUNCTION or LIST but got ~A~%"
+                  (type-of cmds)))))
 
 (defparameter *vertex-shader* "
 varying vec2 texture_coordinate;
@@ -109,8 +150,9 @@ void main() {
       (cairo:paint)
       (cairo:set-source-rgb 1 1 1)
       (cairo:set-line-width 1)
-      (cairo:move-to 0 0)
-      (cairo:line-to width height)
+      ;; (cairo:move-to 0 0)
+      ;; (cairo:line-to width height)
+      (run-commands *draw-commands*)
       (cairo:stroke))
     (cairo:destroy ctx)
     (cairo:destroy surf))

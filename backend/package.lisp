@@ -9,8 +9,10 @@
    #:start-transaction
    #:end-transaction
    #:with-transaction
+   #:reset-transaction
    #:init
    #:shutdown
    #:update
+   #:reset-backend
    #:draw-line
    ))
