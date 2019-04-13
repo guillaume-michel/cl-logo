@@ -203,5 +203,9 @@ void main() {
               (sdl2:destroy-renderer renderer)
               (sdl2:destroy-window window))))))))
 
+(defmacro with-sdl2-backend ((&key width height) &body body)
+  `(let ((*backend* (make-instance 'sdl2-backend :width ,width :height ,height)))
+     (progn ,@body)))
+
 (eval-when (::load-toplevel)
   (set-sdl2-backend-as-default :width 512 :height 512))

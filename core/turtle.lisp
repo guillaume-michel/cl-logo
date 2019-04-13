@@ -58,12 +58,11 @@
 
 (defun undo ()
   (cond ((null *history*) t)
-        ((= (length *history*) 1) (reset))
         (t (progn
+             (setf *turtle* (caar *history*))
              (setf *history* (cdr *history*))
-             (setf *turtle* (caar *history*)))))
-  (when (not (null *backend*))
-    (delete-last-transaction *backend*))
+             (when (not (null *backend*))
+               (delete-last-transaction *backend*)))))
   *turtle*)
 
 (defconstant +degrees-to-radians+ (/ (float pi 1f0) 180))
@@ -75,12 +74,15 @@
 (defmacro defcmd (name lambda-list &body body)
   `(defun ,name (,@lambda-list)
      (progn
-       (with-transactional-backend (*backend*)
-         ,@body)
-       (when (= (transaction-count *backend*) 0)
-         (setf *history* (cons (list (copy-object *turtle*)
-                                     (list (quote ,name) ,@lambda-list))
-                               *history*)))
+       (let ((turtle-before-cmd))
+         (when (= (transaction-count *backend*) 0)
+           (setf turtle-before-cmd (copy-object *turtle*)))
+         (with-transactional-backend (*backend*)
+           ,@body)
+         (when (= (transaction-count *backend*) 0)
+           (setf *history* (cons (list turtle-before-cmd
+                                       (list (quote ,name) ,@lambda-list))
+                                 *history*))))
        *turtle*)))
 
 (defun precise-cos (angle)

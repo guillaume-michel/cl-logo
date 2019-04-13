@@ -1,10 +1,10 @@
 (defpackage :cl-logo.examples
   (:use :cl
-        :cl-logo
-        :cl-logo.backend.text)
+        :cl-logo)
   (:documentation "cl-logo examples")
   (:export
    #:rectangle
    #:square
    #:robot
+   #:flower
    ))

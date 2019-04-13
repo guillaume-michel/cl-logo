@@ -8,4 +8,5 @@
            #:reset-backend
            #:draw-line
            #:commit
-           #:set-sdl2-backend-as-default))
+           #:set-sdl2-backend-as-default
+           #:with-sdl2-backend))
