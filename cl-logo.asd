@@ -41,7 +41,8 @@
   :components ((:module "backend"
                         :serial t
                         :components ((:file "package")
-                                     (:file "api")))))
+                                     (:file "api")
+                                     (:file "transactional-backend")))))
 
 (defsystem "cl-logo/backend/null"
   :description "Logo implemented in Common LISP - null backend"
@@ -79,11 +80,31 @@
   :homepage "http://www.orilla.fr"
   :license "MIT License (see COPYING)"
   :depends-on ("uiop"
-               "cl-logo/backend")
+               "cl-logo/backend"
+               "sdl2"
+               "cl-opengl"
+               "cl-cairo2"
+               "bordeaux-threads"
+               "cl-autowrap")
   :components ((:module "backend/sdl2"
                         :serial t
                         :components ((:file "package")
                                      (:file "primitives")))))
+
+(defsystem "cl-logo/examples"
+  :description "Logo implemented in Common LISP - Examples"
+  :version (:read-file-form "version.lisp" :at (1 2))
+  :author "Guillaume MICHEL"
+  :mailto "contact@orilla.fr"
+  :homepage "http://www.orilla.fr"
+  :license "MIT License (see COPYING)"
+  :depends-on ("cl-logo")
+  :components ((:module "examples"
+                :serial t
+                :components ((:file "package")
+                             (:file "geometry")
+                             (:file "robot")
+                             (:file "flower")))))
 
 (defsystem "cl-logo/app"
   :description "Logo implemented in Common LISP - Application"
@@ -94,7 +115,8 @@
   :license "MIT License (see COPYING)"
   :depends-on ("uiop"
                "cl-logo"
-               "cl-logo/backend/sdl2")
+               "cl-logo/backend/sdl2"
+               "cl-logo/examples")
   :components ((:module "app"
                         :serial t
                         :components ((:file "package")

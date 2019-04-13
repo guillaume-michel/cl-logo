@@ -1,5 +1,13 @@
 (uiop:define-package :cl-logo.core
     (:use :cl)
+  (:import-from :cl-logo.backend
+                #:*backend*
+                #:reset-backend
+                #:draw-line
+                #:transaction-count
+                #:with-transactional-backend
+                #:delete-last-transaction
+                )
   (:export
    #:*turtle*
    #:get-state

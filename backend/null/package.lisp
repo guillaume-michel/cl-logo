@@ -2,5 +2,9 @@
 (uiop:define-package :cl-logo.backend.null
     (:use :cl
           :cl-logo.backend)
-  (:export #:draw-line
+  (:export #:init
+           #:shutdown
+           #:draw-line
+           #:commit
+           #:delete-last-transaction
            #:set-null-backend-as-default))

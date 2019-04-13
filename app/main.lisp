@@ -1,5 +1,9 @@
 (in-package :cl-logo.app)
 
-(defun start())
+(defun start()
+  (init *backend*)
+  (reset))
 
-(defun stop ())
+(defun stop ()
+  (reset)
+  (shutdown *backend*))
