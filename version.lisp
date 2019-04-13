@@ -1,3 +1,3 @@
 (in-package :cl-logo)
 
-(defparameter *version* "0.0.1")
+(defparameter *version* "0.0.2")
