@@ -1,10 +1,11 @@
-;;;; --------------- SDL2+CAIRO2 backend --------------------------
+;;;; --------------- SDL2 + CAIRO backend --------------------------
 (uiop:define-package :cl-logo.backend.sdl2
     (:use :cl
           :cl-logo.backend)
-  (:export #:init
+  (:export #:sdl2-backend
+           #:init
            #:shutdown
-           #:update
            #:reset-backend
            #:draw-line
+           #:commit
            #:set-sdl2-backend-as-default))

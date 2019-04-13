@@ -41,8 +41,8 @@
   :components ((:module "backend"
                         :serial t
                         :components ((:file "package")
-                                     (:file "transaction")
-                                     (:file "api")))))
+                                     (:file "api")
+                                     (:file "transactional-backend")))))
 
 (defsystem "cl-logo/backend/null"
   :description "Logo implemented in Common LISP - null backend"

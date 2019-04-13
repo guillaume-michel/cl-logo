@@ -2,19 +2,16 @@
 
 (defparameter *draw-commands* nil)
 
-(defclass sdl2-backend (transaction)
+(defclass sdl2-backend (transactional-backend)
   ((width :initarg :width
           :accessor width)
    (height :initarg :height
-           :accessor height)
-   (fps :initarg :fps
-        :initform 60
-        :accessor fps)))
+           :accessor height)))
 
 (defmethod print-object ((object sdl2-backend) stream)
   (print-unreadable-object (object stream :type t :identity t)
-    (with-slots (width height fps) object
-      (format stream ":width ~d :height ~d :fps ~d" width height fps))))
+    (with-slots (width height) object
+      (format stream ":width ~d :height ~d" width height))))
 
 (defmethod init ((backend sdl2-backend))
   (bt:make-thread (lambda ()
@@ -25,52 +22,43 @@
   (sdl2:push-event :quit)
   (values))
 
-(defmethod update ((backend sdl2-backend))
-  (when sdl2::*event-loop*
-    (sdl2:push-event :userevent)))
+(defmethod reset-backend ((backend sdl2-backend))
+  (call-next-method)
+  (setf *draw-commands* nil)
+  (commit backend))
 
 (defmethod draw-line ((backend sdl2-backend) x1 y1 x2 y2)
-  (unless (/= (transaction-count backend) 0)
-    (error "draw-line should be called in a transaction"))
+  (cairo:move-to x1 y1)
+  (cairo:line-to x2 y2))
 
-  (setf (transaction-commands backend)
-        (cons (lambda ()
-                (cairo:move-to x1 y1)
-                (cairo:line-to x2 y2))
-              (transaction-commands backend)))
+(defun trigger-refresh ()
+  (when sdl2::*event-loop*
+      (sdl2:register-user-event-type :logo-draw)
+      (sdl2:push-user-event :logo-draw *draw-commands*)))
 
-  (format t "SDL2: draw line from (~D, ~D) to (~D, ~D)~%" x1 y1 x2 y2))
+(defmethod commit ((backend sdl2-backend))
+  (when (= (transaction-count backend) 0)
+    (when (not (null (transaction-commands backend)))
+      (setf *draw-commands*
+            (cons (reverse (transaction-commands backend))
+                  *draw-commands*))
+      (setf (transaction-commands backend) nil))
 
-(defmethod reset-backend ((backend sdl2-backend))
-  (setf *draw-commands* nil)
-  (update backend))
+    (trigger-refresh)))
+
+(defmethod delete-last-transaction ((backend sdl2-backend))
+  (setf *draw-commands* (cdr *draw-commands*))
+  (trigger-refresh))
 
 (defun set-sdl2-backend-as-default (&key width height)
   (setf *backend* (make-instance 'sdl2-backend :width width :height height)))
-
-(defmethod start-transaction ((backend sdl2-backend))
-  (call-next-method)
-  (format t "start-transaction SDL2 ~A~%" (transaction-count backend)))
-
-(defmethod end-transaction ((backend sdl2-backend))
-  (format t "end-transaction SDL2 ~A~%" (transaction-count backend))
-
-  (when (= (transaction-count backend) 1)
-    (setf *draw-commands*
-          (cons (reverse (transaction-commands backend))
-                *draw-commands*))
-    (setf (transaction-commands backend) nil))
-
-  (call-next-method)
-
-  (update backend))
 
 (defun run-commands (cmds)
   (cond ((null cmds) nil)
         ((functionp cmds) (funcall cmds))
         ((consp cmds)
-         (run-commands (car cmds))
-         (run-commands (cdr cmds)))
+         (run-commands (cdr cmds))
+         (run-commands (car cmds)))
         (t (error "cl-logo.backend.sdl2:run-commands expects FUNCTION or LIST but got ~A~%"
                   (type-of cmds)))))
 
@@ -141,7 +129,7 @@ void main() {
     (gl:vertex width 0.0))
   )
 
-(defun render (window width height tex texname)
+(defun render (window width height tex texname cmds)
   (let* ((surf (cairo:create-image-surface-for-data
                 tex :argb32 width height (* 4 width)))
          (ctx (cairo:create-context surf)))
@@ -150,9 +138,7 @@ void main() {
       (cairo:paint)
       (cairo:set-source-rgb 1 1 1)
       (cairo:set-line-width 1)
-      ;; (cairo:move-to 0 0)
-      ;; (cairo:line-to width height)
-      (run-commands *draw-commands*)
+      (run-commands cmds)
       (cairo:stroke))
     (cairo:destroy ctx)
     (cairo:destroy surf))
@@ -201,7 +187,7 @@ void main() {
               (gl:clear-color 0.0 0.0 0.0 1.0)
               (gl:clear :color-buffer)
 
-              (render window width height tex texname)
+              (render window width height tex texname nil)
 
               (sdl2:with-event-loop (:method :poll)
                 (:quit () t)
@@ -209,8 +195,8 @@ void main() {
                         (when (sdl2:scancode= (sdl2:scancode-value keysym)
                                               :scancode-escape)
                           (sdl2:push-event :quit)))
-                (:userevent ()
-                            (render window width height tex texname))
+                (:logo-draw (:user-data cmds)
+                            (render window width height tex texname cmds))
                 (:idle ()
                        (sdl2:delay delay)))
 

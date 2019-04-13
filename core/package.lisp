@@ -2,10 +2,11 @@
     (:use :cl)
   (:import-from :cl-logo.backend
                 #:*backend*
-                #:with-transaction
-                #:transaction-count
-                #:reset-transaction
                 #:reset-backend
+                #:draw-line
+                #:transaction-count
+                #:with-transactional-backend
+                #:delete-last-transaction
                 )
   (:export
    #:*turtle*

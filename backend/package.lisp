@@ -2,17 +2,20 @@
 (uiop:define-package :cl-logo.backend
     (:use :cl)
   (:export
+   ;; api
    #:*backend*
-   #:transaction
+   #:init
+   #:shutdown
+   #:reset-backend
+   #:draw-line
+
+   ;; transactional-backend
+   #:transactional-backend
    #:transaction-commands
    #:transaction-count
    #:start-transaction
    #:end-transaction
-   #:with-transaction
-   #:reset-transaction
-   #:init
-   #:shutdown
-   #:update
-   #:reset-backend
-   #:draw-line
+   #:commit
+   #:delete-last-transaction
+   #:with-transactional-backend
    ))

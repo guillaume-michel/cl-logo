@@ -5,4 +5,6 @@
   (:export #:init
            #:shutdown
            #:draw-line
+           #:commit
+           #:delete-last-transaction
            #:set-null-backend-as-default))
