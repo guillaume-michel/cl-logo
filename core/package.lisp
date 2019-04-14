@@ -9,7 +9,15 @@
                 #:delete-last-transaction
                 )
   (:export
+   #:pen
+   #:pen-color
+   #:pen-width
+   #:pen-state
    #:*turtle*
+   #:turtle-x
+   #:turtle-y
+   #:turtle-theta
+   #:turtle-pen
    #:get-state
    #:show-program
    #:undo
@@ -19,6 +27,8 @@
    #:rotate
    #:penup
    #:pendown
+   #:penwidth
+   #:pencolor
    #:backward
    #:face-up
    #:face-down

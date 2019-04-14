@@ -6,12 +6,14 @@
   ((width :initarg :width
           :accessor width)
    (height :initarg :height
-           :accessor height)))
+           :accessor height)
+   (bg-color :initarg :bg-color
+             :accessor bg-color)))
 
 (defmethod print-object ((object sdl2-backend) stream)
   (print-unreadable-object (object stream :type t :identity t)
-    (with-slots (width height) object
-      (format stream ":width ~d :height ~d" width height))))
+    (with-slots (width height bg-color) object
+      (format stream ":width ~d :height ~d :bg-color ~A" width height bg-color))))
 
 (defmethod init ((backend sdl2-backend))
   (bt:make-thread (lambda ()
@@ -27,9 +29,15 @@
   (setf *draw-commands* nil)
   (commit backend))
 
-(defmethod draw-line ((backend sdl2-backend) x1 y1 x2 y2)
-  (cairo:move-to x1 y1)
-  (cairo:line-to x2 y2))
+(defmethod draw-line ((backend sdl2-backend) x1 y1 x2 y2 color width)
+  (destructuring-bind (r g b) color
+    (cairo:set-source-rgb (float (/ r 255))
+                          (float (/ g 255))
+                          (float (/ b 255)))
+    (cairo:set-line-width width)
+    (cairo:move-to x1 y1)
+    (cairo:line-to x2 y2)
+    (cairo:stroke)))
 
 (defun trigger-refresh ()
   (when sdl2::*event-loop*
@@ -50,8 +58,8 @@
   (setf *draw-commands* (cdr *draw-commands*))
   (trigger-refresh))
 
-(defun set-sdl2-backend-as-default (&key width height)
-  (setf *backend* (make-instance 'sdl2-backend :width width :height height)))
+(defun set-sdl2-backend-as-default (&key width height bg-color)
+  (setf *backend* (make-instance 'sdl2-backend :width width :height height :bg-color bg-color)))
 
 (defun run-commands (cmds)
   (cond ((null cmds) nil)
@@ -129,17 +137,17 @@ void main() {
     (gl:vertex width 0.0))
   )
 
-(defun render (window width height tex texname cmds)
+(defun render (window width height bg-color tex texname cmds)
   (let* ((surf (cairo:create-image-surface-for-data
                 tex :argb32 width height (* 4 width)))
          (ctx (cairo:create-context surf)))
     (cairo:with-context (ctx)
-      (cairo:set-source-rgb 0 0 0)
+      (destructuring-bind (r g b) bg-color
+        (cairo:set-source-rgb (float (/ r 255))
+                              (float (/ g 255))
+                              (float (/ b 255))))
       (cairo:paint)
-      (cairo:set-source-rgb 1 1 1)
-      (cairo:set-line-width 1)
-      (run-commands cmds)
-      (cairo:stroke))
+      (run-commands cmds))
     (cairo:destroy ctx)
     (cairo:destroy surf))
   (gl:bind-texture :texture-2d texname)
@@ -151,6 +159,7 @@ void main() {
 (defun run-loop (backend)
   (let ((width (width backend))
         (height (height backend))
+        (bg-color (bg-color backend))
         (delay (floor (float (/ 1000 60)))))
     (sdl2:with-init (:everything)
       (multiple-value-bind (window renderer)
@@ -187,7 +196,7 @@ void main() {
               (gl:clear-color 0.0 0.0 0.0 1.0)
               (gl:clear :color-buffer)
 
-              (render window width height tex texname nil)
+              (render window width height bg-color tex texname nil)
 
               (sdl2:with-event-loop (:method :poll)
                 (:quit () t)
@@ -196,7 +205,7 @@ void main() {
                                               :scancode-escape)
                           (sdl2:push-event :quit)))
                 (:logo-draw (:user-data cmds)
-                            (render window width height tex texname cmds))
+                            (render window width height bg-color tex texname cmds))
                 (:idle ()
                        (sdl2:delay delay)))
 
@@ -208,4 +217,4 @@ void main() {
      (progn ,@body)))
 
 (eval-when (::load-toplevel)
-  (set-sdl2-backend-as-default :width 512 :height 512))
+  (set-sdl2-backend-as-default :width 512 :height 512 :bg-color '(255 255 255)))

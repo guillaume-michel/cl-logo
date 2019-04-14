@@ -7,9 +7,9 @@
 
 (defmethod shutdown ((backend text-backend)))
 
-(defmethod draw-line ((backend text-backend) x1 y1 x2 y2)
+(defmethod draw-line ((backend text-backend) x1 y1 x2 y2 color width)
   (declare (ignore backend))
-  (format t "draw line from (~D, ~D) to (~D, ~D)~%" x1 y1 x2 y2))
+  (format t "draw line from (~D, ~D) to (~D, ~D) :color ~A :width ~d ~%" x1 y1 x2 y2 color width))
 
 (defun run-commands (cmds)
   (cond ((null cmds) nil)

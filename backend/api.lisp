@@ -11,5 +11,6 @@
 (defgeneric reset-backend (backend)
   (:documentation "Reset the backend"))
 
-(defgeneric draw-line (backend x1 y1 x2 y2)
-  (:documentation "Draw a line from (x1, y1) to (x2, y2) into the given backend"))
+(defgeneric draw-line (backend x1 y1 x2 y2 color width)
+  (:documentation "Draw a line from (x1, y1) to (x2, y2)
+with given color and width into the given backend"))

@@ -1,39 +1,67 @@
 (in-package :cl-logo.core)
 
-(defclass turtle-state ()
+(defclass pen ()
+  ((color :initarg :color
+          :initform '(0 0 0)
+          :accessor pen-color
+          :documentation "pen's RGB color")
+   (width :initarg :width
+          :initform 1
+          :accessor pen-width
+          :documentation "pen's width in pixels")
+   (state :initarg :state
+          :initform :down
+          :accessor pen-state
+          :documentation "pen's state (:up or :down)")))
+
+(defmethod print-object ((object pen) stream)
+  (print-unreadable-object (object stream :type t :identity t)
+    (with-slots (color width state) object
+      (format stream ":color ~A :width ~d :state ~A" color width state))))
+
+(defclass turtle ()
   ((x :initarg :x
       :initform 0
-      :accessor x)
+      :accessor turtle-x)
    (y :initarg :y
       :initform 0
-      :accessor y)
+      :accessor turtle-y)
    (theta :initarg :theta
           :initform 0
-          :accessor theta
+          :accessor turtle-theta
           :documentation "angle from X axis in degrees")
    (pen :initarg :pen
-        :initform :down
-        :accessor pen)))
+        :initform (make-instance 'pen)
+        :accessor turtle-pen)))
 
-(defmethod print-object ((object turtle-state) stream)
+(defmethod print-object ((object turtle) stream)
   (print-unreadable-object (object stream :type t :identity t)
     (with-slots (x y theta pen) object
-      (format stream ":x ~d :y ~d :theta ~d :pen ~A" x y theta pen))))
+      (with-slots (color width state) pen
+        (format stream
+                ":x ~d :y ~d :theta ~d :color ~A :width ~d :state ~A"
+                x y theta color width state)))))
 
 (defgeneric copy-object (object)
   (:documentation "deep object copy"))
 
-(defmethod copy-object ((turtle turtle-state))
-  (make-instance 'turtle-state
-                 :x (x turtle)
-                 :y (y turtle)
-                 :theta (theta turtle)
-                 :pen (pen turtle)))
+(defmethod copy-object ((turtle turtle))
+  (make-instance 'turtle
+                 :x (turtle-x turtle)
+                 :y (turtle-y turtle)
+                 :theta (turtle-theta turtle)
+                 :pen (copy-object (turtle-pen turtle))))
+
+(defmethod copy-object ((pen pen))
+  (make-instance 'pen
+                 :color (pen-color pen)
+                 :width (pen-width pen)
+                 :state (pen-state pen)))
 
 (defparameter *turtle* nil)
 
 (defun reset-turtle ()
-  (setf *turtle* (make-instance 'turtle-state)))
+  (setf *turtle* (make-instance 'turtle)))
 
 (defparameter *history* nil)
 
@@ -44,10 +72,12 @@
   (mapcar #'cadr (reverse *history*)))
 
 (defun get-state()
-  (list (x *turtle*)
-        (y *turtle*)
-        (theta *turtle*)
-        (pen *turtle*)))
+  (list (turtle-x *turtle*)
+        (turtle-y *turtle*)
+        (turtle-theta *turtle*)
+        (pen-color (turtle-pen *turtle*))
+        (pen-width (turtle-pen *turtle*))
+        (pen-state (turtle-pen *turtle*))))
 
 (defun reset ()
   (reset-history)
@@ -104,43 +134,55 @@
           (t (sin (radians angle))))))
 
 (defcmd forward (length)
-  (let* ((new-x (+ (x *turtle*) (* length (precise-cos (theta *turtle*)))))
-         (new-y (+ (y *turtle*) (* length (precise-sin (theta *turtle*))))))
-    (if (eq (pen *turtle*) :down)
-        (draw-line *backend* (x *turtle*) (y *turtle*) new-x new-y))
-    (setf (x *turtle*) new-x)
-    (setf (y *turtle*) new-y)))
+  (let* ((new-x (+ (turtle-x *turtle*) (* length (precise-cos (turtle-theta *turtle*)))))
+         (new-y (+ (turtle-y *turtle*) (* length (precise-sin (turtle-theta *turtle*))))))
+    (if (eq (pen-state (turtle-pen *turtle*)) :down)
+        (draw-line *backend*
+                   (turtle-x *turtle*)
+                   (turtle-y *turtle*)
+                   new-x
+                   new-y
+                   (pen-color (turtle-pen *turtle*))
+                   (pen-width (turtle-pen *turtle*))))
+    (setf (turtle-x *turtle*) new-x)
+    (setf (turtle-y *turtle*) new-y)))
 
 (defcmd rotate (angle)
-  (setf (theta *turtle*) (+ (theta *turtle*) angle)))
+  (setf (turtle-theta *turtle*) (+ (turtle-theta *turtle*) angle)))
 
 (defcmd penup ()
-  (setf (pen *turtle*) :up))
+  (setf (pen-state (turtle-pen *turtle*)) :up))
 
 (defcmd pendown ()
-  (setf (pen *turtle*) :down))
+  (setf (pen-state (turtle-pen *turtle*)) :down))
+
+(defcmd penwidth (width)
+  (setf (pen-width (turtle-pen *turtle*)) width))
+
+(defcmd pencolor (r g b)
+  (setf (pen-color (turtle-pen *turtle*)) (list r g b)))
 
 (defcmd backward (length)
   (forward (- length)))
 
 (defcmd face-up ()
-  (setf (theta *turtle*) 90))
+  (setf (turtle-theta *turtle*) 90))
 
 (defcmd face-down ()
-  (setf (theta *turtle*) 270))
+  (setf (turtle-theta *turtle*) 270))
 
 (defcmd face-left ()
-  (setf (theta *turtle*) 180))
+  (setf (turtle-theta *turtle*) 180))
 
 (defcmd face-right ()
-  (setf (theta *turtle*) 0))
+  (setf (turtle-theta *turtle*) 0))
 
 (defcmd move-to (x y)
-  (setf (x *turtle*) x)
-  (setf (y *turtle*) y))
+  (setf (turtle-x *turtle*) x)
+  (setf (turtle-y *turtle*) y))
 
 (defun current-pos ()
-  (cons (x *turtle*) (y *turtle*)))
+  (cons (turtle-x *turtle*) (turtle-y *turtle*)))
 
 (eval-when (::load-toplevel)
   (reset))

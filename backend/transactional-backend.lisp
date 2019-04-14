@@ -42,7 +42,7 @@ ref counting is done to detect end of transaction."))
   (setf (transaction-commands backend) nil)
   (setf (transaction-count backend) 0))
 
-(defmethod draw-line :around ((backend transactional-backend) x1 y1 x2 y2)
+(defmethod draw-line :around ((backend transactional-backend) x1 y1 x2 y2 color width)
   (unless (> (transaction-count backend) 0)
     (error "draw-line should be called in a transaction"))
 
