@@ -7,4 +7,7 @@
    #:square
    #:robot
    #:flower
+
+   ;; Adam's drawings
+   #:robot-stairs
    ))
