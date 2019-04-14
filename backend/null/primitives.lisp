@@ -7,8 +7,8 @@
 
 (defmethod shutdown ((backend null-backend)))
 
-(defmethod draw-line ((backend null-backend) x1 y1 x2 y2)
-  (declare (ignore backend x1 y1 x2 y2)))
+(defmethod draw-line ((backend null-backend) x1 y1 x2 y2 color width)
+  (declare (ignore backend x1 y1 x2 y2 color width)))
 
 (defmethod commit ((backend null-backend))
   (setf (transaction-commands backend) nil))

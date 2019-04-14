@@ -104,7 +104,8 @@
                 :components ((:file "package")
                              (:file "geometry")
                              (:file "robot")
-                             (:file "flower")))))
+                             (:file "flower")
+                             (:file "adam")))))
 
 (defsystem "cl-logo/app"
   :description "Logo implemented in Common LISP - Application"
