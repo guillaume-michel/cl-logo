@@ -1,8 +1,10 @@
 ;;;; --------------- TEXT backend ---------------------------------
 (uiop:define-package :cl-logo.backend.text
     (:use :cl
-          :cl-logo.backend)
-  (:export #:init
+          :cl-logo.backend
+          :cl-logo.core)
+  (:export #:text-backend
+           #:init
            #:shutdown
            #:draw-line
            #:commit

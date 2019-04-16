@@ -137,17 +137,36 @@ void main() {
     (gl:vertex width 0.0))
   )
 
-(defun render (window width height bg-color tex texname cmds)
+(defun path (filename)
+  "return full path of file name expressed relativelly to the base project path."
+  (asdf:system-relative-pathname :cl-logo filename))
+
+(defun render (window width height bg-color tex texname cmds turtle-surf)
   (let* ((surf (cairo:create-image-surface-for-data
                 tex :argb32 width height (* 4 width)))
-         (ctx (cairo:create-context surf)))
+         (ctx (cairo:create-context surf))
+         (turtle-width (cairo:image-surface-get-width turtle-surf))
+         (turtle-height (cairo:image-surface-get-height turtle-surf)))
     (cairo:with-context (ctx)
+      ;; draw background
       (destructuring-bind (r g b) bg-color
         (cairo:set-source-rgb (float (/ r 255))
                               (float (/ g 255))
                               (float (/ b 255))))
       (cairo:paint)
-      (run-commands cmds))
+
+      ;; draw logo commands
+      (run-commands cmds)
+
+      ;; draw turtle
+      (cairo:translate (turtle-x *turtle*)
+                       (turtle-y *turtle*))
+      (cairo:rotate (radians (+ 90 (turtle-theta *turtle*))))
+      (cairo:set-source-surface turtle-surf
+                                (- (float (/ turtle-width 2)))
+                                (- (float (/ turtle-height 2))))
+      (cairo:paint))
+
     (cairo:destroy ctx)
     (cairo:destroy surf))
   (gl:bind-texture :texture-2d texname)
@@ -160,7 +179,8 @@ void main() {
   (let ((width (width backend))
         (height (height backend))
         (bg-color (bg-color backend))
-        (delay (floor (float (/ 1000 60)))))
+        (delay (floor (float (/ 1000 60))))
+        (turtle-surf (cairo:image-surface-create-from-png (path "images/turtle.png"))))
     (sdl2:with-init (:everything)
       (multiple-value-bind (window renderer)
           (sdl2:create-window-and-renderer width height '(:shown :opengl))
@@ -196,7 +216,7 @@ void main() {
               (gl:clear-color 0.0 0.0 0.0 1.0)
               (gl:clear :color-buffer)
 
-              (render window width height bg-color tex texname nil)
+              (render window width height bg-color tex texname nil turtle-surf)
 
               (sdl2:with-event-loop (:method :poll)
                 (:quit () t)
@@ -205,12 +225,13 @@ void main() {
                                               :scancode-escape)
                           (sdl2:push-event :quit)))
                 (:logo-draw (:user-data cmds)
-                            (render window width height bg-color tex texname cmds))
+                            (render window width height bg-color tex texname cmds turtle-surf))
                 (:idle ()
                        (sdl2:delay delay)))
 
               (sdl2:destroy-renderer renderer)
-              (sdl2:destroy-window window))))))))
+              (sdl2:destroy-window window))))))
+    (cairo:destroy turtle-surf)))
 
 (defmacro with-sdl2-backend ((&key width height) &body body)
   `(let ((*backend* (make-instance 'sdl2-backend :width ,width :height ,height)))

@@ -1,43 +1,23 @@
 (uiop:define-package :cl-logo.core
     (:use :cl)
-  (:import-from :cl-logo.backend
-                #:*backend*
-                #:reset-backend
-                #:draw-line
-                #:transaction-count
-                #:with-transactional-backend
-                #:delete-last-transaction
-                )
   (:export
+   #:copy-object
+
+   #:radians
+   #:precise-cos
+   #:precise-sin
+
    #:pen
    #:pen-color
    #:pen-width
    #:pen-state
+
    #:*turtle*
    #:turtle-x
    #:turtle-y
    #:turtle-theta
    #:turtle-pen
+   #:reset-turtle
+
    #:get-state
-   #:show-program
-   #:undo
-   #:reset
-   #:defcmd
-   #:forward
-   #:rotate
-   #:penup
-   #:pendown
-   #:penwidth
-   #:pencolor
-   #:backward
-   #:face-up
-   #:face-down
-   #:face-left
-   #:face-right
-   #:move-to
-   #:current-pos
-   #:up
-   #:down
-   #:left
-   #:right
    ))

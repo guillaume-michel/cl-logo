@@ -24,7 +24,11 @@
   (when (= (transaction-count backend) 0)
     (when (not (null (transaction-commands backend)))
       (run-commands (reverse (transaction-commands backend)))
-      (setf (transaction-commands backend) nil))))
+      (setf (transaction-commands backend) nil)
+      (format t "turtle is now at: (~d, ~d) :angle ~d"
+              (turtle-x *turtle*)
+              (turtle-y *turtle*)
+              (turtle-theta *turtle*)))))
 
 (defmethod delete-last-transaction ((backend text-backend)))
 
