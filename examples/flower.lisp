@@ -24,4 +24,5 @@
     (move-to xp3 yp3)
     (rectangle w h)
     (move-to xp4 yp4)
-    (rectangle w h)))
+    (rectangle w h)
+    (move-to x y)))

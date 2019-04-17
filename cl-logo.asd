@@ -7,7 +7,8 @@
   :license "MIT License (see COPYING)"
   :depends-on ("uiop"
                "cl-logo/core"
-               "cl-logo/backend")
+               "cl-logo/backend"
+               "cl-logo/logo")
   :serial t
   :components ((:static-file "COPYING")
                (:static-file "README.org")
@@ -22,13 +23,15 @@
   :mailto "contact@orilla.fr"
   :homepage "http://www.orilla.fr"
   :license "MIT License (see COPYING)"
-  :depends-on ("uiop"
-               "cl-logo/backend")
+  :depends-on ("uiop")
   :components ((:module "core"
                         :serial t
                         :components ((:file "package")
+                                     (:file "generic")
+                                     (:file "math")
+                                     (:file "pen")
                                      (:file "turtle")
-                                     (:file "logo")))))
+                                     (:file "utils")))))
 
 (defsystem "cl-logo/backend"
   :description "Logo implemented in Common LISP - backend API"
@@ -66,7 +69,8 @@
   :homepage "http://www.orilla.fr"
   :license "MIT License (see COPYING)"
   :depends-on ("uiop"
-               "cl-logo/backend")
+               "cl-logo/backend"
+               "cl-logo/core")
   :components ((:module "backend/text"
                         :serial t
                         :components ((:file "package")
@@ -81,6 +85,7 @@
   :license "MIT License (see COPYING)"
   :depends-on ("uiop"
                "cl-logo/backend"
+               "cl-logo/core"
                "sdl2"
                "cl-opengl"
                "cl-cairo2"
@@ -89,6 +94,23 @@
   :components ((:module "backend/sdl2"
                         :serial t
                         :components ((:file "package")
+                                     (:file "primitives")))))
+
+(defsystem "cl-logo/logo"
+  :description "Logo implemented in Common LISP - Logo like language"
+  :version (:read-file-form "version.lisp" :at (1 2))
+  :author "Guillaume MICHEL"
+  :mailto "contact@orilla.fr"
+  :homepage "http://www.orilla.fr"
+  :license "MIT License (see COPYING)"
+  :depends-on ("uiop"
+               "cl-logo/core"
+               "cl-logo/backend")
+  :components ((:module "logo"
+                        :serial t
+                        :components ((:file "package")
+                                     (:file "history")
+                                     (:file "command")
                                      (:file "primitives")))))
 
 (defsystem "cl-logo/examples"

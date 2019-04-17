@@ -2,7 +2,8 @@
 (uiop:define-package :cl-logo.backend.null
     (:use :cl
           :cl-logo.backend)
-  (:export #:init
+  (:export #:null-backend
+           #:init
            #:shutdown
            #:draw-line
            #:commit
