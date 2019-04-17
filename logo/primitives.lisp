@@ -66,3 +66,13 @@
 
 (defun current-pos ()
   (cons (turtle-x *turtle*) (turtle-y *turtle*)))
+
+(defun show-turtle ()
+  (setf (turtle-visibility *turtle*) :visible)
+  (commit *backend*)
+  *turtle*)
+
+(defun hide-turtle ()
+  (setf (turtle-visibility *turtle*) :hidden)
+  (commit *backend*)
+  *turtle*)

@@ -159,13 +159,14 @@ void main() {
       (run-commands cmds)
 
       ;; draw turtle
-      (cairo:translate (turtle-x *turtle*)
-                       (turtle-y *turtle*))
-      (cairo:rotate (radians (+ 90 (turtle-theta *turtle*))))
-      (cairo:set-source-surface turtle-surf
-                                (- (float (/ turtle-width 2)))
-                                (- (float (/ turtle-height 2))))
-      (cairo:paint))
+      (when (eq (turtle-visibility *turtle*) :visible)
+        (cairo:translate (turtle-x *turtle*)
+                         (turtle-y *turtle*))
+        (cairo:rotate (radians (+ 90 (turtle-theta *turtle*))))
+        (cairo:set-source-surface turtle-surf
+                                  (- (float (/ turtle-width 2)))
+                                  (- (float (/ turtle-height 2))))
+        (cairo:paint)))
 
     (cairo:destroy ctx)
     (cairo:destroy surf))

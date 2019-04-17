@@ -26,4 +26,6 @@
    #:left
    #:right
    #:current-pos
+   #:show-turtle
+   #:hide-turtle
    ))

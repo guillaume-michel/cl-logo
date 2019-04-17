@@ -17,6 +17,7 @@
    #:turtle-y
    #:turtle-theta
    #:turtle-pen
+   #:turtle-visibility
    #:reset-turtle
 
    #:get-state
