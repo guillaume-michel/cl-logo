@@ -10,7 +10,11 @@
    (height :initarg :height
            :accessor height)
    (bg-color :initarg :bg-color
-             :accessor bg-color)))
+             :accessor bg-color)
+   (grid :initarg :grid
+         :initform :visible
+         :accessor grid
+         :documentation "makes the grid :visible or :hidden")))
 
 (defmethod print-object ((object sdl2-backend) stream)
   (print-unreadable-object (object stream :type t :identity t)
@@ -186,7 +190,8 @@ void main() {
       (cairo:paint)
 
       ;; draw grid
-      (draw-grid)
+      (when (eq (grid *backend*) :visible)
+        (draw-grid))
 
       ;; draw logo commands
       (run-commands cmds)
@@ -270,6 +275,16 @@ void main() {
 (defmacro with-sdl2-backend ((&key width height) &body body)
   `(let ((*backend* (make-instance 'sdl2-backend :width ,width :height ,height)))
      (progn ,@body)))
+
+(defun show-grid ()
+  (setf (grid *backend*) :visible)
+  (commit *backend*)
+  (values))
+
+(defun hide-grid ()
+  (setf (grid *backend*) :hidden)
+  (commit *backend*)
+  (values))
 
 (eval-when (::load-toplevel)
   (set-sdl2-backend-as-default :width 512 :height 512 :bg-color '(255 255 255)))
