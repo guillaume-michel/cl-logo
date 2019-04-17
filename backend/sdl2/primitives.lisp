@@ -2,13 +2,19 @@
 
 (defparameter *draw-commands* nil)
 
+(defparameter *grid-interval* 50)
+
 (defclass sdl2-backend (transactional-backend)
   ((width :initarg :width
           :accessor width)
    (height :initarg :height
            :accessor height)
    (bg-color :initarg :bg-color
-             :accessor bg-color)))
+             :accessor bg-color)
+   (grid :initarg :grid
+         :initform :visible
+         :accessor grid
+         :documentation "makes the grid :visible or :hidden")))
 
 (defmethod print-object ((object sdl2-backend) stream)
   (print-unreadable-object (object stream :type t :identity t)
@@ -141,6 +147,34 @@ void main() {
   "return full path of file name expressed relativelly to the base project path."
   (asdf:system-relative-pathname :cl-logo filename))
 
+(defun draw-grid ()
+  (let* ((width (width *backend*))
+         (height (height *backend*))
+         (n-width (floor (/ width *grid-interval*)))
+         (n-height (floor (/ height *grid-interval*)))
+         (grid-color-r 150)
+         (grid-color-g 150)
+         (grid-color-b 150))
+    (dotimes (i n-width)
+      (cairo:set-source-rgb (float (/ grid-color-r 255))
+                            (float (/ grid-color-g 255))
+                            (float (/ grid-color-b 255)))
+      (cairo:set-line-width 1)
+      (cairo:set-dash 0 '(1 1))
+      (cairo:move-to (* (+ i 1) *grid-interval*) 0)
+      (cairo:line-to (* (+ i 1) *grid-interval*) height)
+      (cairo:stroke))
+    (dotimes (i n-height)
+      (cairo:set-source-rgb (float (/ grid-color-r 255))
+                            (float (/ grid-color-g 255))
+                            (float (/ grid-color-b 255)))
+      (cairo:set-line-width 1)
+      (cairo:set-dash 0 '(1 1))
+      (cairo:move-to 0 (* (+ i 1) *grid-interval*))
+      (cairo:line-to width (* (+ i 1) *grid-interval*))
+      (cairo:stroke))
+    (cairo:set-dash 0 '())))
+
 (defun render (window width height bg-color tex texname cmds turtle-surf)
   (let* ((surf (cairo:create-image-surface-for-data
                 tex :argb32 width height (* 4 width)))
@@ -154,6 +188,10 @@ void main() {
                               (float (/ g 255))
                               (float (/ b 255))))
       (cairo:paint)
+
+      ;; draw grid
+      (when (eq (grid *backend*) :visible)
+        (draw-grid))
 
       ;; draw logo commands
       (run-commands cmds)
@@ -237,6 +275,16 @@ void main() {
 (defmacro with-sdl2-backend ((&key width height) &body body)
   `(let ((*backend* (make-instance 'sdl2-backend :width ,width :height ,height)))
      (progn ,@body)))
+
+(defun show-grid ()
+  (setf (grid *backend*) :visible)
+  (commit *backend*)
+  (values))
+
+(defun hide-grid ()
+  (setf (grid *backend*) :hidden)
+  (commit *backend*)
+  (values))
 
 (eval-when (::load-toplevel)
   (set-sdl2-backend-as-default :width 512 :height 512 :bg-color '(255 255 255)))

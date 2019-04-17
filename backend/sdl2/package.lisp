@@ -10,4 +10,7 @@
            #:draw-line
            #:commit
            #:set-sdl2-backend-as-default
-           #:with-sdl2-backend))
+           #:with-sdl2-backend
+           #:show-grid
+           #:hide-grid
+           ))
