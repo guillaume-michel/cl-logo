@@ -3,10 +3,12 @@
   (:use :cl
         :cl-logo.core
         :cl-logo.backend
-        :cl-logo.logo)
+        :cl-logo.logo
+        :cl-logo.logo.fr)
   (:reexport
    :cl-logo.core
    :cl-logo.backend
-   :cl-logo.logo)
+   :cl-logo.logo
+   :cl-logo.logo.fr)
   (:export
    #:*version*))

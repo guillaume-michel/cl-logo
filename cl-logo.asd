@@ -8,7 +8,8 @@
   :depends-on ("uiop"
                "cl-logo/core"
                "cl-logo/backend"
-               "cl-logo/logo")
+               "cl-logo/logo"
+               "cl-logo/logo/fr")
   :serial t
   :components ((:static-file "COPYING")
                (:static-file "README.org")
@@ -111,6 +112,21 @@
                         :components ((:file "package")
                                      (:file "history")
                                      (:file "command")
+                                     (:file "primitives")))))
+
+(defsystem "cl-logo/logo/fr"
+  :description "Logo implemented in Common LISP - Logo like language in French"
+  :version (:read-file-form "version.lisp" :at (1 2))
+  :author "Guillaume MICHEL"
+  :mailto "contact@orilla.fr"
+  :homepage "http://www.orilla.fr"
+  :license "MIT License (see COPYING)"
+  :depends-on ("uiop"
+               "iterate"
+               "cl-logo/logo")
+  :components ((:module "logo/fr"
+                        :serial t
+                        :components ((:file "package")
                                      (:file "primitives")))))
 
 (defsystem "cl-logo/examples"
