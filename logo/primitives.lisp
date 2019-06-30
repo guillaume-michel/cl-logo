@@ -1,7 +1,10 @@
 (in-package :cl-logo.logo)
 
+(defparameter *easy-mode* nil)
+
 (defcmd forward (length)
-  (let* ((new-x (+ (turtle-x *turtle*) (* length (precise-cos (turtle-theta *turtle*)))))
+  (let* ((length (if *easy-mode* (* length cl-logo.core:*grid-interval*) length))
+         (new-x (+ (turtle-x *turtle*) (* length (precise-cos (turtle-theta *turtle*)))))
          (new-y (+ (turtle-y *turtle*) (* length (precise-sin (turtle-theta *turtle*))))))
     (if (eq (pen-state (turtle-pen *turtle*)) :down)
         (draw-line *backend*
@@ -45,8 +48,10 @@
   (setf (turtle-theta *turtle*) 0))
 
 (defcmd move-to (x y)
-  (setf (turtle-x *turtle*) x)
-  (setf (turtle-y *turtle*) y))
+  (let ((x (if *easy-mode* (* x cl-logo.core:*grid-interval*) x))
+        (y (if *easy-mode* (* y cl-logo.core:*grid-interval*) y)))
+    (setf (turtle-x *turtle*) x)
+    (setf (turtle-y *turtle*) y)))
 
 (defcmd up (length)
   (face-up)
@@ -65,7 +70,11 @@
   (forward length))
 
 (defun current-pos ()
-  (cons (turtle-x *turtle*) (turtle-y *turtle*)))
+  (let* ((x (turtle-x *turtle*))
+         (y (turtle-y *turtle*))
+         (final-x (if *easy-mode* (/ x cl-logo.core:*grid-interval*) x))
+         (final-y (if *easy-mode* (/ y cl-logo.core:*grid-interval*) y)))
+    (cons final-x final-y)))
 
 (defun show-turtle ()
   (setf (turtle-visibility *turtle*) :visible)

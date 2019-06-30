@@ -3,6 +3,7 @@
           :cl-logo.core
           :cl-logo.backend)
   (:export
+   #:*easy-mode*
    #:show-program
    #:reset
    #:undo

@@ -2,8 +2,6 @@
 
 (defparameter *draw-commands* nil)
 
-(defparameter *grid-interval* 50)
-
 (defclass sdl2-backend (transactional-backend)
   ((width :initarg :width
           :accessor width)

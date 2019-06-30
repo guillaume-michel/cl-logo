@@ -28,6 +28,7 @@
   :components ((:module "core"
                         :serial t
                         :components ((:file "package")
+                                     (:file "variables")
                                      (:file "generic")
                                      (:file "math")
                                      (:file "pen")

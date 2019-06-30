@@ -1,6 +1,7 @@
 (uiop:define-package :cl-logo.core
     (:use :cl)
   (:export
+   #:*grid-interval*
    #:copy-object
 
    #:radians
