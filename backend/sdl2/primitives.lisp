@@ -198,7 +198,9 @@ void main() {
       (when (eq (turtle-visibility *turtle*) :visible)
         (cairo:translate (turtle-x *turtle*)
                          (turtle-y *turtle*))
-        (cairo:rotate (radians (+ 90 (turtle-theta *turtle*))))
+        (if cl-logo.logo:*easy-mode*
+            (cairo:rotate (radians 180))
+            (cairo:rotate (radians (+ 90 (turtle-theta *turtle*)))))
         (cairo:set-source-surface turtle-surf
                                   (- (float (/ turtle-width 2)))
                                   (- (float (/ turtle-height 2))))
